@@ -1,0 +1,43 @@
+{% extends 'flashcards/base.html' %}
+
+{% block content %}
+<h2>
+    {% if current_collection %}
+        Добавить слово в коллекцию "{{ current_collection.name }}"
+    {% else %}
+        Добавить карточку
+    {% endif %}
+</h2>
+
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.english_word.label_tag }}
+        {{ form.english_word }}
+        {% if form.english_word.errors %}
+        <div class="alert alert-danger mt-2">
+            {{ form.english_word.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        {{ form.russian_translation.label_tag }}
+        {{ form.russian_translation }}
+        {% if form.russian_translation.errors %}
+        <div class="alert alert-danger mt-2">
+            {{ form.russian_translation.errors }}
+        </div>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    {% if current_collection %}
+        <a href="{% url 'collection_detail' current_collection.id %}" class="btn btn-secondary">Отмена</a>
+    {% else %}
+        <a href="{% url 'home' %}" class="btn btn-secondary">Отмена</a>
+    {% endif %}
+</form>
+{% endblock %}
+
+<input type="text" name="english_word" required>
+<input type="text" name="russian_translation" required>
+<select name="collection">...</select>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My English World</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h4 class="mb-4">My English World</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'home' %}">
+                        <i class="fas fa-home me-2"></i> Все слова
+                    </a>
+                </li>
+                {% for collection in collections %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'collection_detail' collection.id %}">
+                        <i class="fas fa-folder me-2"></i> {{ collection.name }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            
+            <div class="mt-4">
+                <a href="{% url 'add_collection' %}" class="btn btn-primary mb-2">
+                    <i class="fas fa-plus me-2"></i> Новая коллекция
+                </a>
+                <a href="{% url 'add_flashcard' %}" class="btn btn-success">
+                    <i class="fas fa-plus me-2"></i> Новая карточка
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+</body>
+</html>

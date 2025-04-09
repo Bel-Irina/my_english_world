@@ -1,0 +1,37 @@
+{% extends 'flashcards/base.html' %}
+
+{% block content %}
+<h2>Все слова</h2>
+<div class="row mt-4">
+    {% for flashcard in flashcards %}
+    <div class="col-md-4 mb-4">
+        <div class="flashcard-container">
+            <div class="flashcard">
+                <div class="flashcard-front">
+                    <div class="flashcard-content">
+                        <h3>{{ flashcard.english_word }}</h3>
+                        {% if flashcard.collection %}
+                        <span class="badge bg-secondary">{{ flashcard.collection.name }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flashcard-back">
+                    <div class="flashcard-content">
+                        <h3>{{ flashcard.russian_translation }}</h3>
+                        {% if flashcard.collection %}
+                        <span class="badge bg-secondary">{{ flashcard.collection.name }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <form method="post" action="{% url 'delete_flashcard' flashcard.id %}" class="delete-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
