@@ -9,4 +9,6 @@ urlpatterns = [
     path('collections/<int:collection_id>/delete/', views.delete_collection, name='delete_collection'),
     path('flashcards/add/', views.add_flashcard, name='add_flashcard'),
     path('flashcards/<int:flashcard_id>/delete/', views.delete_flashcard, name='delete_flashcard'),
+    path('flashcards/add/', views.add_flashcard_to_collection, name='add_flashcard'),
+    path('collections/<int:collection_id>/add-flashcard/', views.add_flashcard_to_collection, name='add_flashcard_to_collection'),
 ]

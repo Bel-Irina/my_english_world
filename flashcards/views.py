@@ -1,14 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Collection, Flashcard
 from .forms import CollectionForm, FlashcardForm
+from django.core.exceptions import ObjectDoesNotExist
 
 def home(request):
-    flashcards = Flashcard.objects.all()
-    collections = Collection.objects.all()
-    return render(request, 'flashcards/home.html', {
-        'flashcards': flashcards,
-        'collections': collections
-    })
+    try:
+        flashcards = Flashcard.objects.all()
+        collections = Collection.objects.all()
+        return render(request, 'flashcards/home.html', {
+            'flashcards': flashcards,
+            'collections': collections
+        })
+    except ObjectDoesNotExist as e:
+        return render(request, 'flashcards/error.html', {'error': str(e)})
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, id=collection_id)
@@ -44,6 +48,8 @@ def add_flashcard(request):
     else:
         form = FlashcardForm()
     
+    return render(request, 'flashcards/add_flashcard.html', {'form': form})
+    
     collections = Collection.objects.all()
     return render(request, 'flashcards/add_flashcard.html', {
         'form': form,
@@ -65,22 +71,24 @@ def delete_flashcard(request, flashcard_id):
         return redirect('home')
     return redirect('home')
 
-def add_flashcard_to_collection(request, collection_id):
-    collection = get_object_or_404(Collection, id=collection_id)
-    
+def add_flashcard_to_collection(request, collection_id=None):
+    collection = None
+    if collection_id:
+        collection = get_object_or_404(Collection, id=collection_id)
+
     if request.method == 'POST':
         form = FlashcardForm(request.POST)
         if form.is_valid():
             flashcard = form.save(commit=False)
-            flashcard.collection = collection
+            if collection:
+                flashcard.collection = collection
             flashcard.save()
-            return redirect('collection_detail', collection_id=collection.id)
+            return redirect('collection_detail', collection_id=collection.id) if collection else redirect('home')
     else:
-        form = FlashcardForm(initial={'collection': collection})
-    
-    collections = Collection.objects.all()
+        initial = {'collection': collection} if collection else {}
+        form = FlashcardForm(initial=initial)
+
     return render(request, 'flashcards/add_flashcard.html', {
         'form': form,
-        'collections': collections,
-        'current_collection': collection
+        'collection': collection
     })
